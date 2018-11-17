@@ -1,25 +1,28 @@
-var canvas, ctx, cell;
-var m = 50;
-var n = 50;
-var numHues = m * n;
+var canvas, ctx, cellWidth, cellHeight;
+var grid, newGrid;
+var rows, cols;
+var colors = ['rgb(240, 240, 240)', 'rgb(10, 10, 10)'];
 
 function init() {
-  canvas = document.getElementById("canvas");
-  ctx = canvas.getContext("2d");
+  canvas = document.getElementById('canvas');
+  ctx = canvas.getContext('2d');
   canvas.width = 800;
   canvas.height = 800;
-  cell = {
-    width: canvas.width / n,
-    height: canvas.height / m
-  };
+  rows = 5;
+  cols = 5;
 
-  document.getElementById("canvas-width").innerHTML = canvas.width;
-  document.getElementById("canvas-height").innerHTML = canvas.height;
+  cellWidth = canvas.width / cols;
+  cellHeight = canvas.height / rows;
+
+  grid = Array.from(Array(rows), () => Array(cols).fill(0));
+
+  document.getElementById('canvas-width').innerHTML = canvas.width;
+  document.getElementById('canvas-height').innerHTML = canvas.height;
 }
 
 function setCellColor(row, col, fillStyle) {
   ctx.fillStyle = fillStyle;
-  ctx.fillRect(col * cell.width, row * cell.height, cell.width, cell.height);
+  ctx.fillRect(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
 }
 
 function sleep(ms) {
@@ -27,18 +30,10 @@ function sleep(ms) {
 }
 
 async function drawGrid() {
-  let hue;
-  let hueSpan = document.getElementById("hue");
-
-  k = 0;
-  for (let i = 0; i < m; i++) {
-    for (let j = 0; j < n; j++) {
-      hue = 255 - Math.floor(k++ * (255 / (numHues - 1)));
-      //hue = (i + j) % 2 == 0 ? 235 : 20;
-      hueSpan.innerHTML = hue;
-      fillStyle = 'rgb(' + hue + ',' + hue + ',' + hue + ')';
-      setCellColor(i, j, fillStyle);
-      await sleep(1);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      setCellColor(i, j, colors[grid[i][j]]);
+      //await sleep(100);
     }
   }
 }
