@@ -29,11 +29,10 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function drawGrid() {
+function drawGrid() {
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
       setCellColor(i, j, colors[grid[i][j]]);
-      //await sleep(100);
     }
   }
 }
