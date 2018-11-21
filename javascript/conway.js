@@ -1,24 +1,70 @@
-var game;
-var canvas, ctx, cellWidth, cellHeight;
-var colors = ['rgb(240, 240, 240)', 'rgb(10, 10, 10)'];
-var rows, cols;
-
-function setCellColor(row, col, fillStyle) {
-  ctx.fillStyle = fillStyle;
-  ctx.fillRect(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
-}
-
-function drawGrid() {
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      setCellColor(i, j, colors[game.grid[i][j]]);
-    }
-  }
-}
+var gc;
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+function test() {
+  gc = new GameCanvas(document.getElementById("canvas"));
+  gc.newGame(100, 100, 2, 3, 3);
+  gc.game.randomizeGrid(0.1);
+  gc.runGame();
+}
+
+function GameCanvas(canvas, canvasWidth=1000, canvasHeight=1000) {
+  this.canvas = canvas;
+  this.context = canvas.getContext("2d");
+  this.canvas.width = canvasWidth;
+  this.canvas.height = canvasHeight;
+  this.fillStyles = ["rgb(240, 240, 240)", "rgb(10, 10, 10)"];
+}
+
+GameCanvas.prototype = {
+  constructor: GameCanvas,
+
+  newGame: function(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
+    this.game = new GameOfLife(numRows, numCols, survivalMin, survivalMax, birthVal);
+    this.cellWidth = this.canvas.width / numCols;
+    this.cellHeight = this.canvas.height / numRows;
+  },
+
+  setCellColor: function(row, col, fillStyle) {
+    this.context.fillStyle = fillStyle;
+    this.context.fillRect(
+      col * this.cellWidth, row * this.cellHeight, this.cellWidth, this.cellHeight);
+  },
+
+  drawGrid: function() {
+    for (let i = 0; i < this.game.numRows; i++) {
+      for (let j = 0; j < this.game.numCols; j++) {
+        this.setCellColor(i, j, this.fillStyles[this.game.grid[i][j]]);
+      }
+    }
+  },
+
+  runGame: async function(maxIter=3000, delay=100) {
+    this.drawGrid();
+    for (let i = 0; i < maxIter; i++) {
+      await sleep(delay);
+      this.game.updateGrid();
+      this.drawGrid();
+    }
+  }
+}
+
+/*
+async function run(iterations=5000, delay=100) {
+  let generationSpan = document.getElementById("generation");
+  let liveSpan = document.getElementById("live-cells");
+  for (let i = 1; i < iterations; i++) {
+    game.updateGrid();
+    drawGrid();
+    generationSpan.innerHTML = i;
+    liveSpan.innerHTML = game.numLiveCells();
+    await sleep(delay);
+  }
+}
+*/
 
 function GameOfLife(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
   this.numRows = numRows;
@@ -33,11 +79,9 @@ function GameOfLife(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) 
 GameOfLife.prototype = {
   constructor: GameOfLife,
 
-  // TODO: method documentation.
   neighborSum: function(row, col) {
     // Initialize sum to zero and subtract value of the cell at (row, col),
-    // canceling its effect when the all cells in the neighborhood square
-    // are summed.
+    // canceling its effect when all cells in the neighborhood are summed.
     let sum = -this.grid[row][col];
     for (let i of [-1, 0, 1]) {
       for (let j of [-1, 0, 1]) {
@@ -50,7 +94,6 @@ GameOfLife.prototype = {
     return sum;
   },
 
-  // TODO: method documentation.
   updateGrid: function() {
     let newGrid = Array.from(Array(this.numRows), () => Array(this.numCols).fill(0));
     for (let i = 0; i < this.numRows; i++) {
@@ -71,7 +114,7 @@ GameOfLife.prototype = {
   this.grid = newGrid;
   },
 
-  randomizeGrid: function(seedDensity=0.3) {
+  randomizeGrid: function(seedDensity=0.2) {
     for (let i = 0; i < this.numRows; i++) {
       for (let j = 0; j < this.numCols; j++) {
         this.grid[i][j] = Math.random() < seedDensity ? 1 : 0;
@@ -91,36 +134,4 @@ GameOfLife.prototype = {
   }
 }
 
-async function run(iterations=5000, delay=100) {
-  let generationSpan = document.getElementById('generation');
-  let liveSpan = document.getElementById('live-cells');
-  for (let i = 1; i < iterations; i++) {
-    game.updateGrid();
-    drawGrid();
-    generationSpan.innerHTML = i;
-    liveSpan.innerHTML = game.numLiveCells();
-    await sleep(delay);
-  }
-}
-
-function init() {
-  canvas = document.getElementById('canvas');
-  ctx = canvas.getContext('2d');
-  canvas.width = 1000;
-  canvas.height = 1000;
-  let N = 150;
-  rows = N;
-  cols = N;
-
-  cellWidth = canvas.width / cols;
-  cellHeight = canvas.height / rows;
-
-  game = new GameOfLife(rows, cols, 1, 4, 3).randomizeGrid(0.02);
-
-  document.getElementById('canvas-width').innerHTML = canvas.width;
-  document.getElementById('canvas-height').innerHTML = canvas.height;
-}
-
-init();
-drawGrid();
-run(5000, 1);
+test();
