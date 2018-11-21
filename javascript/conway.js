@@ -71,12 +71,13 @@ GameOfLife.prototype = {
   this.grid = newGrid;
   },
 
-  randomizeGrid: function(liveProbability=0.3) {
+  randomizeGrid: function(seedDensity=0.3) {
     for (let i = 0; i < this.numRows; i++) {
       for (let j = 0; j < this.numCols; j++) {
-        this.grid[i][j] = Math.random() < liveProbability ? 1 : 0;
+        this.grid[i][j] = Math.random() < seedDensity ? 1 : 0;
       }
     }
+    return this;
   },
 
   numLiveCells: function() {
@@ -90,7 +91,7 @@ GameOfLife.prototype = {
   }
 }
 
-async function run(iterations=5000) {
+async function run(iterations=5000, delay=100) {
   let generationSpan = document.getElementById('generation');
   let liveSpan = document.getElementById('live-cells');
   for (let i = 1; i < iterations; i++) {
@@ -98,23 +99,23 @@ async function run(iterations=5000) {
     drawGrid();
     generationSpan.innerHTML = i;
     liveSpan.innerHTML = game.numLiveCells();
-    await sleep(100);
+    await sleep(delay);
   }
 }
 
 function init() {
   canvas = document.getElementById('canvas');
   ctx = canvas.getContext('2d');
-  canvas.width = 800;
-  canvas.height = 800;
-  rows = 30;
-  cols = 30;
+  canvas.width = 1000;
+  canvas.height = 1000;
+  let N = 150;
+  rows = N;
+  cols = N;
 
   cellWidth = canvas.width / cols;
   cellHeight = canvas.height / rows;
 
-  game = new GameOfLife(rows, cols);
-  game.randomizeGrid();
+  game = new GameOfLife(rows, cols, 1, 4, 3).randomizeGrid(0.02);
 
   document.getElementById('canvas-width').innerHTML = canvas.width;
   document.getElementById('canvas-height').innerHTML = canvas.height;
@@ -122,4 +123,4 @@ function init() {
 
 init();
 drawGrid();
-run();
+run(5000, 1);
