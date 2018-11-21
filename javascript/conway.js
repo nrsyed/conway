@@ -4,19 +4,13 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function test() {
-  gc = new GameCanvas(document.getElementById("canvas"));
-  gc.newGame(100, 100, 2, 3, 3);
-  gc.game.randomizeGrid(0.1);
-  gc.runGame();
-}
-
 function GameCanvas(canvas, canvasWidth=1000, canvasHeight=1000) {
   this.canvas = canvas;
   this.context = canvas.getContext("2d");
   this.canvas.width = canvasWidth;
   this.canvas.height = canvasHeight;
   this.fillStyles = ["rgb(240, 240, 240)", "rgb(10, 10, 10)"];
+  this.running = true;
 }
 
 GameCanvas.prototype = {
@@ -42,29 +36,15 @@ GameCanvas.prototype = {
     }
   },
 
-  runGame: async function(maxIter=3000, delay=100) {
+  runGame: async function(maxIter=100, delay=100) {
     this.drawGrid();
-    for (let i = 0; i < maxIter; i++) {
+    while (this.running) {
       await sleep(delay);
       this.game.updateGrid();
       this.drawGrid();
     }
   }
 }
-
-/*
-async function run(iterations=5000, delay=100) {
-  let generationSpan = document.getElementById("generation");
-  let liveSpan = document.getElementById("live-cells");
-  for (let i = 1; i < iterations; i++) {
-    game.updateGrid();
-    drawGrid();
-    generationSpan.innerHTML = i;
-    liveSpan.innerHTML = game.numLiveCells();
-    await sleep(delay);
-  }
-}
-*/
 
 function GameOfLife(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
   this.numRows = numRows;
@@ -134,4 +114,24 @@ GameOfLife.prototype = {
   }
 }
 
-test();
+function keyDown(e) {
+  if (e.keyCode == 32) {
+    if (gc.running) {
+      gc.running = false;
+    } else {
+      gc.running = true;
+      gc.runGame();
+    }
+  }
+}
+
+function init() {
+  window.addEventListener("keydown", keyDown);
+  gc = new GameCanvas(document.getElementById("canvas"));
+
+  gc.newGame(100, 100, 2, 3, 3);
+  gc.game.randomizeGrid(0.1);
+  gc.runGame();
+}
+
+init();
