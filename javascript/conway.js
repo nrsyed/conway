@@ -4,11 +4,9 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function GameCanvas(canvas, canvasWidth=1000, canvasHeight=1000) {
+function GameCanvas(canvas) {
   this.canvas = canvas;
   this.context = canvas.getContext("2d");
-  this.canvas.width = canvasWidth;
-  this.canvas.height = canvasHeight;
   this.fillStyles = ["rgb(240, 240, 240)", "rgb(10, 10, 10)"];
   this.running = true;
 }
@@ -28,6 +26,17 @@ GameCanvas.prototype = {
       col * this.cellWidth, row * this.cellHeight, this.cellWidth, this.cellHeight);
   },
 
+  toggleCell: function(row, col) {
+    let newValue = 1 - this.game.grid[row][col];
+    this.game.grid[row][col] = newValue;
+    this.setCellColor(row, col, this.fillStyles[newValue]);
+  },
+
+  clearGrid: function() {
+    this.game.clearGrid();
+    this.drawGrid();
+  },
+
   drawGrid: function() {
     for (let i = 0; i < this.game.numRows; i++) {
       for (let j = 0; j < this.game.numCols; j++) {
@@ -43,6 +52,10 @@ GameCanvas.prototype = {
       this.game.updateGrid();
       this.drawGrid();
     }
+  },
+
+  getCellCoords: function(canvasX, canvasY) {
+    return;
   }
 }
 
@@ -74,6 +87,14 @@ GameOfLife.prototype = {
     return sum;
   },
 
+  clearGrid: function() {
+    this.grid = this.getZeroGrid();
+  },
+
+  getZeroGrid: function() {
+    return Array.from(Array(this.numRows), () => Array(this.numCols).fill(0));
+  },
+
   updateGrid: function() {
     let newGrid = Array.from(Array(this.numRows), () => Array(this.numCols).fill(0));
     for (let i = 0; i < this.numRows; i++) {
@@ -94,7 +115,7 @@ GameOfLife.prototype = {
   this.grid = newGrid;
   },
 
-  randomizeGrid: function(seedDensity=0.2) {
+  randomizeGrid: function(seedDensity=0.08) {
     for (let i = 0; i < this.numRows; i++) {
       for (let j = 0; j < this.numCols; j++) {
         this.grid[i][j] = Math.random() < seedDensity ? 1 : 0;
@@ -115,22 +136,45 @@ GameOfLife.prototype = {
 }
 
 function keyDown(e) {
-  if (e.keyCode == 32) {
-    if (gc.running) {
-      gc.running = false;
-    } else {
-      gc.running = true;
-      gc.runGame();
-    }
+  switch (e.keyCode) {
+    case 32:
+      // Spacebar: pause/unpause Game execution.
+      if (gc.running) {
+        gc.running = false;
+      } else {
+        gc.running = true;
+        gc.runGame();
+      }
+      break;
+    case 13:
+      // Enter: randomize grid.
+      gc.game.randomizeGrid();
+      gc.drawGrid();
+      break;
+    case 16:
+      // Shift: clear grid.
+      gc.clearGrid();
+      break;
+    default:
+      console.log(e);
   }
+}
+
+function click(e) {
+  let cellX = Math.floor(e.layerX / gc.cellWidth);
+  let cellY = Math.floor(e.layerY / gc.cellHeight);
+  gc.toggleCell(cellY, cellX);
 }
 
 function init() {
   window.addEventListener("keydown", keyDown);
-  gc = new GameCanvas(document.getElementById("canvas"));
 
-  gc.newGame(100, 100, 2, 3, 3);
-  gc.game.randomizeGrid(0.1);
+  canvas = document.getElementById("canvas");
+  canvas.addEventListener("click", click);
+
+  gc = new GameCanvas(canvas);
+  gc.newGame(30, 30, 2, 3, 3);
+  gc.game.randomizeGrid(0.5);
   gc.runGame();
 }
 
