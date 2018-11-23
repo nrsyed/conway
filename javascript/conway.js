@@ -115,7 +115,7 @@ GameOfLife.prototype = {
   this.grid = newGrid;
   },
 
-  randomizeGrid: function(seedDensity=0.08) {
+  randomizeGrid: function(seedDensity=0.06) {
     for (let i = 0; i < this.numRows; i++) {
       for (let j = 0; j < this.numCols; j++) {
         this.grid[i][j] = Math.random() < seedDensity ? 1 : 0;
@@ -155,8 +155,6 @@ function keyDown(e) {
       // Shift: clear grid.
       gc.clearGrid();
       break;
-    default:
-      console.log(e);
   }
 }
 
@@ -166,16 +164,52 @@ function click(e) {
   gc.toggleCell(cellY, cellX);
 }
 
+function sliderInput(e) {
+  let slider = e.target;
+  let sliderId = slider.id.split("-")[0];
+  let sliderVal = slider.value;
+
+  let sliderMin = slider.min;
+  let sliderRange = slider.max - sliderMin;
+  let sliderWidth = slider.offsetWidth;
+  let position = sliderVal / sliderRange;
+
+  let thumbWidth = parseInt(
+    window.getComputedStyle(slider).getPropertyValue("--thumb-width"));
+  let effectiveWidth = sliderWidth - thumbWidth;
+
+  let output = document.getElementById(sliderId + "-balloon");
+  let balloonWidth = parseInt(window.getComputedStyle(output).getPropertyValue(
+    "width"));
+  let leftOffset = (-(balloonWidth - thumbWidth) / 2) + (position * effectiveWidth);
+  output.setAttribute("style", "left: " + leftOffset + "px");
+
+  if (sliderId == "lower") {
+    gc.game.survivalMin = sliderVal;
+  } else if (sliderId == "upper") {
+    gc.game.survivalMax = sliderVal;
+  } else {
+    gc.game.birthVal = sliderVal;
+  }
+
+  output.innerHTML = sliderVal;
+}
+
 function init() {
+  let sliders = document.querySelectorAll(".slider input");
+  for (slider of sliders) {
+    slider.addEventListener("input", sliderInput);
+  }
+
   window.addEventListener("keydown", keyDown);
 
   canvas = document.getElementById("canvas");
   canvas.addEventListener("click", click);
 
   gc = new GameCanvas(canvas);
-  gc.newGame(30, 30, 2, 3, 3);
-  gc.game.randomizeGrid(0.5);
-  gc.runGame();
+  gc.newGame(100, 100, 2, 3, 3);
+  gc.game.randomizeGrid(0.08);
+  gc.runGame(1);
 }
 
 init();

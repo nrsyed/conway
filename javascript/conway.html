@@ -6,8 +6,22 @@
   </head>
   <body>
     <canvas id="canvas" height=500 width=500></canvas>
-    <p>Canvas width: <span id="canvas-width"></span></p>
-    <p>Canvas height: <span id="canvas-height"></span></p>
+
+    <div class="slider">
+      <input value="2" min="0" max="8" step="1" type="range"
+        id="lower-slider">
+      <output id="lower-balloon">2</output>
+
+      <input class="transparent" value="3" min="0" max="8" step="1"
+        type="range" id="upper-slider">
+      <output id="upper-balloon">3</output>
+    </div>
+    <div class="slider">
+      <input value="3" min="0" max="8" step="1" type="range"
+        id="birth-slider">
+      <output id="birth-balloon">3</output>
+    </div>
+
     <p>Generation: <span id="generation">0</span></p>
     <p>Live cells: <span id="live-cells">0</span></p>
   </body>
