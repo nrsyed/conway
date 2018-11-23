@@ -146,8 +146,8 @@ function keyDown(e) {
         gc.runGame();
       }
       break;
-    case 13:
-      // Enter: randomize grid.
+    case 82:
+      // r: randomize grid.
       gc.game.randomizeGrid();
       gc.drawGrid();
       break;
@@ -155,6 +155,8 @@ function keyDown(e) {
       // Shift: clear grid.
       gc.clearGrid();
       break;
+    default:
+      //console.log(e.keyCode);
   }
 }
 
@@ -195,6 +197,14 @@ function sliderInput(e) {
   output.innerHTML = sliderVal;
 }
 
+function submit(e) {
+  e.preventDefault();
+  let size = document.getElementById("size");
+  console.log(size.value);
+  //console.log(e);
+  //return false;
+}
+
 function init() {
   let sliders = document.querySelectorAll(".slider input");
   for (slider of sliders) {
@@ -203,11 +213,14 @@ function init() {
 
   window.addEventListener("keydown", keyDown);
 
-  canvas = document.getElementById("canvas");
+  let canvas = document.getElementById("canvas");
   canvas.addEventListener("click", click);
 
+  let settings = document.getElementById("settings");
+  settings.addEventListener("submit", submit);
+
   gc = new GameCanvas(canvas);
-  gc.newGame(100, 100, 2, 3, 3);
+  gc.newGame(30, 30, 2, 3, 3);
   gc.game.randomizeGrid(0.08);
   gc.runGame(1);
 }
