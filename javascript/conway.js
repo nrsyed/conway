@@ -102,7 +102,7 @@ GameOfLife.prototype = {
   },
 
   updateGrid: function() {
-    let newGrid = Array.from(Array(this.numRows), () => Array(this.numCols).fill(0));
+    let newGrid = this.getZeroGrid();
     for (let i = 0; i < this.numRows; i++) {
       for (let j = 0; j < this.numCols; j++) {
         let numLiveNeighbors = this.neighborSum(i, j);
