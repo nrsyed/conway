@@ -121,7 +121,7 @@ GameOfLife.prototype = {
   randomizeGrid: function() {
     for (let i = 0; i < this.numRows; i++) {
       for (let j = 0; j < this.numCols; j++) {
-        this.grid[i][j] = Math.random() < this.seedDensity ? 1 : 0;
+        this.grid[i][j] = Math.random() <= this.seedDensity ? 1 : 0;
       }
     }
     return this;
@@ -202,28 +202,35 @@ function sliderInput(e) {
 
 function sizeSubmit(e) {
   e.preventDefault();
-  let size = document.getElementById("size");
-  console.log(typeof(size.value));
+  let size = document.getElementById("size").value;
+}
+
+function validateDelay() {
+  let delay = document.getElementById("delay").value;
+  let delayVal = Number(delay);
+  return delay != "" && Number.isInteger(delayVal) && delayVal >= 1 && delayVal <= 5000;
+}
+
+function validateDensity() {
+  let density = document.getElementById("density").value;
+  let densityVal = Number(density);
+  return density != "" && density > 0 && density <= 1;
+}
+
+function validateSize() {
+  let size = document.getElementById("size").value;
+  let sizeVal = Number(size);
+  return size != "" && Number.isInteger(sizeVal) && sizeVal >= 2 && sizeVal <= 500;
 }
 
 function settingsSubmit(e) {
   if (e.keyCode == 13) {
-    let delay = document.getElementById("delay").value;
-    let density = document.getElementById("density").value;
-
-    // Validate input.
-    if (delay) {
-      let delayVal = Number(delay);
-      if (Number.isInteger(delayVal) && delayVal >= 1 && delayVal <= 5000) {
-        gc.delay = delayVal;
-      }
+    if (validateDelay()) {
+      gc.delay = Number(document.getElementById("delay").value);
     }
 
-    if (density) {
-      let densityVal = Number(density);
-      if (densityVal > 0 && densityVal <= 1) {
-        gc.game.seedDensity = densityVal;
-      }
+    if (validateDensity()) {
+      gc.game.seedDensity = Number(document.getElementById("density").value);
     }
   }
 }
