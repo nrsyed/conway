@@ -197,7 +197,7 @@ function sliderInput(e) {
   output.innerHTML = sliderVal;
 }
 
-function submit(e) {
+function sizeSubmit(e) {
   e.preventDefault();
   let size = document.getElementById("size");
   console.log(size.value);
@@ -216,8 +216,8 @@ function init() {
   let canvas = document.getElementById("canvas");
   canvas.addEventListener("click", click);
 
-  let settings = document.getElementById("settings");
-  settings.addEventListener("submit", submit);
+  let sizeForm = document.getElementById("size-form");
+  sizeForm.addEventListener("submit", sizeSubmit);
 
   gc = new GameCanvas(canvas);
   gc.newGame(30, 30, 2, 3, 3);
