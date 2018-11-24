@@ -4,34 +4,17 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function GameCanvas(canvas, delay=100) {
+function GameCanvas(canvas, delay=100, seedDensity=0.08) {
   this.canvas = canvas;
   this.context = canvas.getContext("2d");
   this.delay = delay;
   this.fillStyles = ["rgb(240, 240, 240)", "rgb(10, 10, 10)"];
   this.running = true;
+  this.seedDensity = seedDensity;
 }
 
 GameCanvas.prototype = {
   constructor: GameCanvas,
-
-  newGame: function(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
-    this.game = new GameOfLife(numRows, numCols, survivalMin, survivalMax, birthVal);
-    this.cellWidth = this.canvas.width / numCols;
-    this.cellHeight = this.canvas.height / numRows;
-  },
-
-  setCellColor: function(row, col, fillStyle) {
-    this.context.fillStyle = fillStyle;
-    this.context.fillRect(
-      col * this.cellWidth, row * this.cellHeight, this.cellWidth, this.cellHeight);
-  },
-
-  toggleCell: function(row, col) {
-    let newValue = 1 - this.game.grid[row][col];
-    this.game.grid[row][col] = newValue;
-    this.setCellColor(row, col, this.fillStyles[newValue]);
-  },
 
   clearGrid: function() {
     this.game.clearGrid();
@@ -46,6 +29,20 @@ GameCanvas.prototype = {
     }
   },
 
+  getCellCoords: function(canvasX, canvasY) {
+    return;
+  },
+
+  newGame: function(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
+    this.game = new GameOfLife(numRows, numCols, survivalMin, survivalMax, birthVal);
+    this.cellWidth = this.canvas.width / numCols;
+    this.cellHeight = this.canvas.height / numRows;
+  },
+
+  randomizeGrid: function() {
+    this.game.randomizeGrid(this.seedDensity);
+  },
+
   runGame: async function(maxIter=100) {
     this.drawGrid();
     while (this.running) {
@@ -55,13 +52,20 @@ GameCanvas.prototype = {
     }
   },
 
-  getCellCoords: function(canvasX, canvasY) {
-    return;
+  setCellColor: function(row, col, fillStyle) {
+    this.context.fillStyle = fillStyle;
+    this.context.fillRect(
+      col * this.cellWidth, row * this.cellHeight, this.cellWidth, this.cellHeight);
+  },
+
+  toggleCell: function(row, col) {
+    let newValue = 1 - this.game.grid[row][col];
+    this.game.grid[row][col] = newValue;
+    this.setCellColor(row, col, this.fillStyles[newValue]);
   }
 }
 
-function GameOfLife(numRows, numCols, survivalMin=2, survivalMax=3,
-      birthVal=3, seedDensity=0.08) {
+function GameOfLife(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
   this.numRows = numRows;
   this.numCols = numCols;
   this.grid = Array.from(Array(numRows), () => Array(numCols).fill(0));
@@ -69,7 +73,6 @@ function GameOfLife(numRows, numCols, survivalMin=2, survivalMax=3,
   this.birthVal = birthVal;
   this.survivalMin = survivalMin;
   this.survivalMax = survivalMax;
-  this.seedDensity = seedDensity;
 }
 
 GameOfLife.prototype = {
@@ -118,13 +121,12 @@ GameOfLife.prototype = {
   this.grid = newGrid;
   },
 
-  randomizeGrid: function() {
+  randomizeGrid: function(seedDensity) {
     for (let i = 0; i < this.numRows; i++) {
       for (let j = 0; j < this.numCols; j++) {
-        this.grid[i][j] = Math.random() <= this.seedDensity ? 1 : 0;
+        this.grid[i][j] = Math.random() <= seedDensity ? 1 : 0;
       }
     }
-    return this;
   },
 
   numLiveCells: function() {
@@ -151,7 +153,7 @@ function keyDown(e) {
       break;
     case 82:
       // r: randomize grid.
-      gc.game.randomizeGrid();
+      gc.randomizeGrid();
       gc.drawGrid();
       break;
     case 16:
@@ -205,6 +207,31 @@ function sizeSubmit(e) {
   let size = document.getElementById("size").value;
 }
 
+function setDelay() {
+  if (validateDelay()) {
+    gc.delay = Number(document.getElementById("delay").value);
+  } else {
+    document.getElementById("delay").value = gc.delay;
+  }
+}
+
+function setDensity() {
+  if (validateDensity()) {
+    gc.seedDensity = Number(document.getElementById("density").value);
+  } else {
+    document.getElementById("density").value = gc.seedDensity;
+  }
+}
+
+function setSize() {
+  /*
+  setDelay();
+  setDensity();
+  let delayVal = 
+  let size = document.getElementById("size").value;
+  */
+}
+
 function validateDelay() {
   let delay = document.getElementById("delay").value;
   let delayVal = Number(delay);
@@ -225,13 +252,8 @@ function validateSize() {
 
 function settingsSubmit(e) {
   if (e.keyCode == 13) {
-    if (validateDelay()) {
-      gc.delay = Number(document.getElementById("delay").value);
-    }
-
-    if (validateDensity()) {
-      gc.game.seedDensity = Number(document.getElementById("density").value);
-    }
+    setDelay();
+    setDensity();
   }
 }
 
@@ -254,7 +276,7 @@ function init() {
 
   gc = new GameCanvas(canvas);
   gc.newGame(30, 30, 2, 3, 3);
-  gc.game.randomizeGrid(0.08);
+  gc.randomizeGrid(0.08);
   gc.runGame(1);
 }
 
