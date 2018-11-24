@@ -4,13 +4,14 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function GameCanvas(canvas, delay=100, seedDensity=0.08) {
+function GameCanvas(canvas, delay=100, seedDensity=0.08, size=30) {
   this.canvas = canvas;
   this.context = canvas.getContext("2d");
   this.delay = delay;
   this.fillStyles = ["rgb(240, 240, 240)", "rgb(10, 10, 10)"];
   this.running = true;
   this.seedDensity = seedDensity;
+  this.size = size;
 }
 
 GameCanvas.prototype = {
@@ -33,8 +34,16 @@ GameCanvas.prototype = {
     return;
   },
 
-  newGame: function(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
+  initGame: function(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
     this.game = new GameOfLife(numRows, numCols, survivalMin, survivalMax, birthVal);
+    this.cellWidth = this.canvas.width / numCols;
+    this.cellHeight = this.canvas.height / numRows;
+  },
+
+  newGame: function(numRows, numCols) {
+    this.game.numRows = numRows;
+    this.game.numCols = numCols;
+    this.game.grid = this.game.getZeroGrid();
     this.cellWidth = this.canvas.width / numCols;
     this.cellHeight = this.canvas.height / numRows;
   },
@@ -43,7 +52,7 @@ GameCanvas.prototype = {
     this.game.randomizeGrid(this.seedDensity);
   },
 
-  runGame: async function(maxIter=100) {
+  runGame: async function() {
     this.drawGrid();
     while (this.running) {
       await sleep(this.delay);
@@ -68,7 +77,7 @@ GameCanvas.prototype = {
 function GameOfLife(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
   this.numRows = numRows;
   this.numCols = numCols;
-  this.grid = Array.from(Array(numRows), () => Array(numCols).fill(0));
+  this.grid = this.getZeroGrid();
 
   this.birthVal = birthVal;
   this.survivalMin = survivalMin;
@@ -147,7 +156,6 @@ function keyDown(e) {
       if (gc.running) {
         gc.running = false;
       } else {
-        gc.running = true;
         gc.runGame();
       }
       break;
@@ -204,7 +212,7 @@ function sliderInput(e) {
 
 function sizeSubmit(e) {
   e.preventDefault();
-  let size = document.getElementById("size").value;
+  setSize();
 }
 
 function setDelay() {
@@ -224,12 +232,21 @@ function setDensity() {
 }
 
 function setSize() {
-  /*
-  setDelay();
-  setDensity();
-  let delayVal = 
-  let size = document.getElementById("size").value;
-  */
+  if (validateSize()) {
+    let newSize = Number(document.getElementById("size").value);
+    let survivalMin = gc.game.survivalMin;
+    let survivalMax = gc.game.survivalMax;
+    let birthVal = gc.game.birthVal;
+    sleep(gc.delay * 2);
+    gc.size = newSize;
+    gc.running = false;
+    gc.newGame(newSize, newSize, survivalMin, survivalMax, birthVal);
+    gc.randomizeGrid();
+    gc.runGame();
+    gc.running = true;
+  } else {
+    document.getElementById("size").value = gc.size;
+  }
 }
 
 function validateDelay() {
@@ -275,9 +292,9 @@ function init() {
   settings.addEventListener("keydown", settingsSubmit);
 
   gc = new GameCanvas(canvas);
-  gc.newGame(30, 30, 2, 3, 3);
+  gc.initGame(30, 30, 2, 3, 3);
   gc.randomizeGrid(0.08);
-  gc.runGame(1);
+  gc.runGame();
 }
 
 init();
