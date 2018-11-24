@@ -4,9 +4,10 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function GameCanvas(canvas) {
+function GameCanvas(canvas, delay=100) {
   this.canvas = canvas;
   this.context = canvas.getContext("2d");
+  this.delay = delay;
   this.fillStyles = ["rgb(240, 240, 240)", "rgb(10, 10, 10)"];
   this.running = true;
 }
@@ -45,10 +46,10 @@ GameCanvas.prototype = {
     }
   },
 
-  runGame: async function(maxIter=100, delay=100) {
+  runGame: async function(maxIter=100) {
     this.drawGrid();
     while (this.running) {
-      await sleep(delay);
+      await sleep(this.delay);
       this.game.updateGrid();
       this.drawGrid();
     }
@@ -59,14 +60,16 @@ GameCanvas.prototype = {
   }
 }
 
-function GameOfLife(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
+function GameOfLife(numRows, numCols, survivalMin=2, survivalMax=3,
+      birthVal=3, seedDensity=0.08) {
   this.numRows = numRows;
   this.numCols = numCols;
   this.grid = Array.from(Array(numRows), () => Array(numCols).fill(0));
 
+  this.birthVal = birthVal;
   this.survivalMin = survivalMin;
   this.survivalMax = survivalMax;
-  this.birthVal = birthVal;
+  this.seedDensity = seedDensity;
 }
 
 GameOfLife.prototype = {
@@ -115,10 +118,10 @@ GameOfLife.prototype = {
   this.grid = newGrid;
   },
 
-  randomizeGrid: function(seedDensity=0.06) {
+  randomizeGrid: function() {
     for (let i = 0; i < this.numRows; i++) {
       for (let j = 0; j < this.numCols; j++) {
-        this.grid[i][j] = Math.random() < seedDensity ? 1 : 0;
+        this.grid[i][j] = Math.random() < this.seedDensity ? 1 : 0;
       }
     }
     return this;
@@ -200,9 +203,29 @@ function sliderInput(e) {
 function sizeSubmit(e) {
   e.preventDefault();
   let size = document.getElementById("size");
-  console.log(size.value);
-  //console.log(e);
-  //return false;
+  console.log(typeof(size.value));
+}
+
+function settingsSubmit(e) {
+  if (e.keyCode == 13) {
+    let delay = document.getElementById("delay").value;
+    let density = document.getElementById("density").value;
+
+    // Validate input.
+    if (delay) {
+      let delayVal = Number(delay);
+      if (Number.isInteger(delayVal) && delayVal >= 1 && delayVal <= 5000) {
+        gc.delay = delayVal;
+      }
+    }
+
+    if (density) {
+      let densityVal = Number(density);
+      if (densityVal > 0 && densityVal <= 1) {
+        gc.game.seedDensity = densityVal;
+      }
+    }
+  }
 }
 
 function init() {
@@ -218,6 +241,9 @@ function init() {
 
   let sizeForm = document.getElementById("size-form");
   sizeForm.addEventListener("submit", sizeSubmit);
+
+  let settings = document.getElementById("settings-form");
+  settings.addEventListener("keydown", settingsSubmit);
 
   gc = new GameCanvas(canvas);
   gc.newGame(30, 30, 2, 3, 3);
