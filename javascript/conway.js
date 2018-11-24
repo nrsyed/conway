@@ -30,10 +30,6 @@ GameCanvas.prototype = {
     }
   },
 
-  getCellCoords: function(canvasX, canvasY) {
-    return;
-  },
-
   initGame: function(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
     this.game = new GameOfLife(numRows, numCols, survivalMin, survivalMax, birthVal);
     this.cellWidth = this.canvas.width / numCols;
@@ -156,6 +152,7 @@ function keyDown(e) {
       if (gc.running) {
         gc.running = false;
       } else {
+        gc.running = true;
         gc.runGame();
       }
       break;
