@@ -4,31 +4,62 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/**
+ * @class GameCanvas
+ * Class to display Conway's Game of Life grid in a <canvas> HTML element,
+ * as well as to serve as an interface with a GameOfLife object.
+ */
+
+/**
+ * @constructor
+ * @param {object} canvas - Reference to canvas DOM element.
+ * @param {object} cellCounter - Optional reference to a DOM element whose
+ *    innerHTML text will display the number of living cells in the grid.
+ * @param {object} generationCounter - Optional reference to a DOM element
+ *    whose innerHTML text will display the current Game generation.
+ * @param {int} delay - Delay (in milliseconds) between frame updates.
+ * @param {float} seedDensity - The likelihood (0.01 < p < 1.0) of a cell
+ *    being live when the grid is randomized.
+ * @param {int} numRows - The number of grid rows.
+ * @param {int} numCols - The number of grid columns.
+ */
 function GameCanvas(canvas, cellCounter=null, generationCounter=null,
                     delay=100, seedDensity=0.08, numRows=30, numCols=30) {
   this.canvas = canvas;
   this.cellCounter = cellCounter;
-  this.context = canvas.getContext("2d");
   this.delay = delay;
-  this.fillStyles = ["rgb(240, 240, 240)", "rgb(10, 10, 10)"];
   this.generationCounter = generationCounter;
-  this.running = true;
   this.seedDensity = seedDensity;
 
+  /** @member {object} context - Canvas context. */
+  this.context = canvas.getContext("2d");
+
+  /** @member {array} fillStyles - Live cell and dead cell colors. */
+  this.fillStyles = ["rgb(240, 240, 240)", "rgb(10, 10, 10)"];
+
+  /** @member {bool} running - true if the Game is active, false if paused. */
+  this.running = true;
+
+  /** @member {int} cellWidth - Width of each grid cell in pixels. */
   this.cellWidth = this.canvas.width / numCols;
+
+  /** @member {int} cellHeight - Height of each grid cell in pixels. */
   this.cellHeight = this.canvas.height / numRows;
+
   this.game = new GameOfLife(numRows, numCols);
 }
 
 GameCanvas.prototype = {
   constructor: GameCanvas,
 
+  /** @method clearGrid - Fill the grid with zeros. */
   clearGrid: function() {
     this.game.clearGrid();
     this.drawGrid();
     this.updateCounters();
   },
 
+  /** @method drawGrid - Draw the grid in the canvas. */
   drawGrid: function() {
     for (let i = 0; i < this.game.numRows; i++) {
       for (let j = 0; j < this.game.numCols; j++) {
@@ -37,6 +68,7 @@ GameCanvas.prototype = {
     }
   },
 
+  /** @method newGrid - Create a new grid of a different size. */
   newGrid: function(numRows, numCols) {
     this.running = false;
     this.game.initializeGrid(numRows, numCols);
@@ -45,11 +77,13 @@ GameCanvas.prototype = {
     this.updateCounters();
   },
 
+  /** @method randomizeGrid - Randomize the values of the grid cells. */
   randomizeGrid: function() {
     this.game.randomizeGrid(this.seedDensity);
     this.updateCounters();
   },
 
+  /** @method run - Iteratively update the grid and canvas. */
   run: async function() {
     this.drawGrid();
     while (this.running) {
@@ -60,18 +94,21 @@ GameCanvas.prototype = {
     }
   },
 
+  /** @method setCellColor - Change the color of a cell to the specified color. */
   setCellColor: function(row, col, fillStyle) {
     this.context.fillStyle = fillStyle;
-    this.context.fillRect(
-      col * this.cellWidth, row * this.cellHeight, this.cellWidth, this.cellHeight);
+    this.context.fillRect(col * this.cellWidth, row * this.cellHeight,
+                          this.cellWidth, this.cellHeight);
   },
 
+  /** @method toggleCell - Invert the value (0 -> 1 or 1 -> 0) of a cell. */
   toggleCell: function(row, col) {
     let newValue = 1 - this.game.grid[row][col];
     this.game.grid[row][col] = newValue;
     this.setCellColor(row, col, this.fillStyles[newValue]);
   },
 
+  /** @method updateCounters - Update cell and generation counter innerHTML. */
   updateCounters: function() {
       if (this.cellCounter) {
         this.cellCounter.innerHTML = this.game.numLiveCells();
@@ -83,10 +120,29 @@ GameCanvas.prototype = {
   }
 }
 
-function GameOfLife(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
-  this.generationCount = 0;
-  this.initializeGrid(numRows, numCols);
 
+/**
+ * @class GameOfLife
+ * Class to implement Conway's Game of Life.
+ */
+
+/**
+ * @constructor
+ * @param {int} numRows - Number of grid rows.
+ * @param {int} numCols - Number of grid columns.
+ * @param {int} survivalMin - Minimum number of neighborhood cells (cells
+ *    surrounding a given cell) required for a cell to survive to the
+ *    next generation.
+ * @param {int} survivalMax - Maximum number of neighborhood cells for which
+ *    a given cell is allowed to survive to the next generation.
+ * @param {int} birthVal - Number of live cells that must be in the
+ *    neighborhood of a dead cell for it to become a live cell.
+ */
+function GameOfLife(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
+  /** @member {int} generationCount - Number of elapsed generations. */
+  this.generationCount = 0;
+
+  this.initializeGrid(numRows, numCols);
   this.birthVal = birthVal;
   this.survivalMin = survivalMin;
   this.survivalMax = survivalMax;
@@ -95,15 +151,18 @@ function GameOfLife(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) 
 GameOfLife.prototype = {
   constructor: GameOfLife,
 
+  /** @method clearGrid - Fill grid with zeros and reset generation count. */
   clearGrid: function() {
     this.grid = this.getZeroGrid();
     this.generationCount = 0;
   },
 
+  /** @method getZeroGrid - Obtain a zero-filled grid. */
   getZeroGrid: function() {
     return Array.from(Array(this.numRows), () => Array(this.numCols).fill(0));
   },
 
+  /** @method initializeGrid - Create a new grid of a different size. **/
   initializeGrid: function(numRows, numCols) {
     this.numRows = numRows;
     this.numCols = numCols;
@@ -111,6 +170,11 @@ GameOfLife.prototype = {
     this.generationCount = 0;
   },
 
+  /**
+   * @method randomizeGrid - Randomize the values of all grid cells.
+   * @param {float} seedDensity - The probability (0.01 < p < 1.0) that
+   *    any given cell will be live.
+   */
   randomizeGrid: function(seedDensity) {
     for (let i = 0; i < this.numRows; i++) {
       for (let j = 0; j < this.numCols; j++) {
@@ -120,6 +184,7 @@ GameOfLife.prototype = {
     this.generationCount = 0;
   },
 
+  /** @method updateGrid - Execute one iteration of Conway's Game of Life. */
   updateGrid: function() {
     let updatedGrid = this.getZeroGrid();
     for (let i = 0; i < this.numRows; i++) {
@@ -141,6 +206,7 @@ GameOfLife.prototype = {
     this.generationCount++;
   },
 
+  /** @method neighborSum - Return the sum of a cell's neighbors. */
   neighborSum: function(row, col) {
     // Initialize sum to zero and subtract value of the cell at (row, col),
     // canceling its effect when all cells in the neighborhood are summed.
@@ -156,6 +222,7 @@ GameOfLife.prototype = {
     return sum;
   },
 
+  /** @method numLiveCells - Return the number of live cells in the grid. */
   numLiveCells: function() {
     let sum = 0;
     for (let i = 0; i < this.numRows; i++) {
