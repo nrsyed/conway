@@ -4,14 +4,21 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function GameCanvas(canvas, delay=100, seedDensity=0.08, size=30) {
+function GameCanvas(canvas, cellCounter=null, generationCounter=null,
+                    delay=100, seedDensity=0.08, numRows=30, numCols=30) {
   this.canvas = canvas;
+  this.cellCounter = cellCounter
   this.context = canvas.getContext("2d");
   this.delay = delay;
   this.fillStyles = ["rgb(240, 240, 240)", "rgb(10, 10, 10)"];
+  this.generationCounter = generationCounter;
   this.running = true;
   this.seedDensity = seedDensity;
-  this.size = size;
+
+  this.cellWidth = this.canvas.width / numCols;
+  this.cellHeight = this.canvas.height / numRows;
+  this.game = new GameOfLife(numRows, numCols);
+
 }
 
 GameCanvas.prototype = {
@@ -20,6 +27,7 @@ GameCanvas.prototype = {
   clearGrid: function() {
     this.game.clearGrid();
     this.drawGrid();
+    this.updateCounters();
   },
 
   drawGrid: function() {
@@ -30,30 +38,26 @@ GameCanvas.prototype = {
     }
   },
 
-  initGame: function(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
-    this.game = new GameOfLife(numRows, numCols, survivalMin, survivalMax, birthVal);
+  newGrid: function(numRows, numCols) {
+    this.running = false;
+    this.game.initializeGrid(numRows, numCols);
     this.cellWidth = this.canvas.width / numCols;
     this.cellHeight = this.canvas.height / numRows;
-  },
-
-  newGame: function(numRows, numCols) {
-    this.game.numRows = numRows;
-    this.game.numCols = numCols;
-    this.game.grid = this.game.getZeroGrid();
-    this.cellWidth = this.canvas.width / numCols;
-    this.cellHeight = this.canvas.height / numRows;
+    this.updateCounters();
   },
 
   randomizeGrid: function() {
     this.game.randomizeGrid(this.seedDensity);
+    this.updateCounters();
   },
 
-  runGame: async function() {
+  run: async function() {
     this.drawGrid();
     while (this.running) {
       await sleep(this.delay);
       this.game.updateGrid();
       this.drawGrid();
+      this.updateCounters();
     }
   },
 
@@ -67,13 +71,22 @@ GameCanvas.prototype = {
     let newValue = 1 - this.game.grid[row][col];
     this.game.grid[row][col] = newValue;
     this.setCellColor(row, col, this.fillStyles[newValue]);
+  },
+
+  updateCounters: function() {
+      if (this.cellCounter) {
+        this.cellCounter.innerHTML = this.game.numLiveCells();
+      }
+
+      if (this.generationCounter) {
+        this.generationCounter.innerHTML = this.game.generationCount;
+      }
   }
 }
 
 function GameOfLife(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) {
-  this.numRows = numRows;
-  this.numCols = numCols;
-  this.grid = this.getZeroGrid();
+  this.generationCount = 0;
+  this.initializeGrid(numRows, numCols);
 
   this.birthVal = birthVal;
   this.survivalMin = survivalMin;
@@ -82,6 +95,52 @@ function GameOfLife(numRows, numCols, survivalMin=2, survivalMax=3, birthVal=3) 
 
 GameOfLife.prototype = {
   constructor: GameOfLife,
+
+  clearGrid: function() {
+    this.grid = this.getZeroGrid();
+    this.generationCount = 0;
+  },
+
+  getZeroGrid: function() {
+    return Array.from(Array(this.numRows), () => Array(this.numCols).fill(0));
+  },
+
+  initializeGrid: function(numRows, numCols) {
+    this.numRows = numRows;
+    this.numCols = numCols;
+    this.grid = this.getZeroGrid();
+    this.generationCount = 0;
+  },
+
+  randomizeGrid: function(seedDensity) {
+    for (let i = 0; i < this.numRows; i++) {
+      for (let j = 0; j < this.numCols; j++) {
+        this.grid[i][j] = Math.random() <= seedDensity ? 1 : 0;
+      }
+    }
+    this.generationCount = 0;
+  },
+
+  updateGrid: function() {
+    let updatedGrid = this.getZeroGrid();
+    for (let i = 0; i < this.numRows; i++) {
+      for (let j = 0; j < this.numCols; j++) {
+        let numLiveNeighbors = this.neighborSum(i, j);
+
+        // Take action for the cases where the this.grid[i][j] is alive and
+        // where it is not, based on the number of live neighbors.
+        if ((this.grid[i][j] && numLiveNeighbors >= this.survivalMin
+              && numLiveNeighbors <= this.survivalMax)
+            || (!this.grid[i][j] && numLiveNeighbors == this.birthVal)) {
+          updatedGrid[i][j] = 1;
+        } else {
+          updatedGrid[i][j] = 0;
+        }
+      }
+    }
+    this.grid = updatedGrid;
+    this.generationCount++;
+  },
 
   neighborSum: function(row, col) {
     // Initialize sum to zero and subtract value of the cell at (row, col),
@@ -96,42 +155,6 @@ GameOfLife.prototype = {
       }
     }
     return sum;
-  },
-
-  clearGrid: function() {
-    this.grid = this.getZeroGrid();
-  },
-
-  getZeroGrid: function() {
-    return Array.from(Array(this.numRows), () => Array(this.numCols).fill(0));
-  },
-
-  updateGrid: function() {
-    let newGrid = this.getZeroGrid();
-    for (let i = 0; i < this.numRows; i++) {
-      for (let j = 0; j < this.numCols; j++) {
-        let numLiveNeighbors = this.neighborSum(i, j);
-
-        // Take action for the cases where the this.grid[i][j] is alive and
-        // where it is not, based on the number of live neighbors.
-        if ((this.grid[i][j] && numLiveNeighbors >= this.survivalMin
-              && numLiveNeighbors <= this.survivalMax)
-            || (!this.grid[i][j] && numLiveNeighbors == this.birthVal)) {
-          newGrid[i][j] = 1;
-        } else {
-          newGrid[i][j] = 0;
-        }
-      }
-    }
-  this.grid = newGrid;
-  },
-
-  randomizeGrid: function(seedDensity) {
-    for (let i = 0; i < this.numRows; i++) {
-      for (let j = 0; j < this.numCols; j++) {
-        this.grid[i][j] = Math.random() <= seedDensity ? 1 : 0;
-      }
-    }
   },
 
   numLiveCells: function() {
@@ -153,7 +176,7 @@ function keyDown(e) {
         gc.running = false;
       } else {
         gc.running = true;
-        gc.runGame();
+        gc.run();
       }
       break;
     case 82:
@@ -231,18 +254,14 @@ function setDensity() {
 function setSize() {
   if (validateSize()) {
     let newSize = Number(document.getElementById("size").value);
-    let survivalMin = gc.game.survivalMin;
-    let survivalMax = gc.game.survivalMax;
-    let birthVal = gc.game.birthVal;
-    sleep(gc.delay * 2);
-    gc.size = newSize;
-    gc.running = false;
-    gc.newGame(newSize, newSize, survivalMin, survivalMax, birthVal);
+
+    gc.newGrid(newSize, newSize);
     gc.randomizeGrid();
-    gc.runGame();
+    gc.run();
     gc.running = true;
+
   } else {
-    document.getElementById("size").value = gc.size;
+    document.getElementById("size").value = gc.grid.numRows;
   }
 }
 
@@ -288,10 +307,12 @@ function init() {
   let settings = document.getElementById("settings-form");
   settings.addEventListener("keydown", settingsSubmit);
 
-  gc = new GameCanvas(canvas);
-  gc.initGame(30, 30, 2, 3, 3);
-  gc.randomizeGrid(0.08);
-  gc.runGame();
+  let cellCounter = document.getElementById("live-cells");
+  let generationCounter = document.getElementById("generation");
+
+  gc = new GameCanvas(canvas, cellCounter, generationCounter);
+  gc.randomizeGrid();
+  gc.run();
 }
 
 init();
