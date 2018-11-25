@@ -1,13 +1,13 @@
 var gc;
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function GameCanvas(canvas, cellCounter=null, generationCounter=null,
                     delay=100, seedDensity=0.08, numRows=30, numCols=30) {
   this.canvas = canvas;
-  this.cellCounter = cellCounter
+  this.cellCounter = cellCounter;
   this.context = canvas.getContext("2d");
   this.delay = delay;
   this.fillStyles = ["rgb(240, 240, 240)", "rgb(10, 10, 10)"];
@@ -18,7 +18,6 @@ function GameCanvas(canvas, cellCounter=null, generationCounter=null,
   this.cellWidth = this.canvas.width / numCols;
   this.cellHeight = this.canvas.height / numRows;
   this.game = new GameOfLife(numRows, numCols);
-
 }
 
 GameCanvas.prototype = {
