@@ -1,5 +1,50 @@
+body {
+  background-color: black;
+}
+
+.game-of-life {
+  background-color: rgb(200, 200, 200);
+  margin: 0 auto;
+  padding: 10px 20px;
+  text-align: center;
+  width: 80%;
+}
+
 p {
   margin: 2px auto;
+}
+
+.counter-row {
+  background-color: blue;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 0 auto;
+  width: 400px;
+}
+
+.counter {
+  text-align: left;
+  width: 40%;
+}
+
+.slider-container {
+  background-color: orange;
+  border: 2px solid black;
+  margin: 2px auto;
+  padding: 5px auto;
+  width: 400px;
+}
+
+.slider-row {
+  background-color: red;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 5px 0;
+  padding: 0;
+  width: 100%;
 }
 
 .slider {
@@ -9,10 +54,18 @@ p {
   --slider-width: 300px;
   --slider-range: calc(var(--slider-width) - var(--thumb-width));
 
+  background-color: yellow;
   position: relative;
-  width: var(--slider-width);
-  margin: 20px 20px;
   height: 35px;
+  width: var(--slider-width);
+  margin: 14px 14px;
+  text-align: left;
+}
+
+.slider-label {
+  background-color: green;
+  text-align: left;
+  width: 104px;
 }
 
 .slider input {

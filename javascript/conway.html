@@ -5,33 +5,49 @@
     <title>Conway's game of life</title>
   </head>
   <body>
-    <canvas id="canvas" height=500 width=500></canvas>
+    <div class="game-of-life">
+      <canvas id="canvas" height=500 width=500></canvas>
+      <div class="counter-row">
+        <div class="counter">Generation: <span id="generation">0</span></div>
+        <div class="counter">Live cells: <span id="live-cells">0</span></div>
+      </div>
 
-    <div class="slider">
-      <input value="2" min="0" max="8" step="1" type="range"
-        id="lower-slider">
-      <output id="lower-balloon">2</output>
+      <div class="slider-container">
+        <div class="slider-row">
+          <div class="slider-label">
+            Survival range
+          </div>
+          <div class="slider">
+            <input value="2" min="0" max="8" step="1" type="range"
+              id="lower-slider">
+            <output id="lower-balloon">2</output>
+            <input class="transparent" value="3" min="0" max="8" step="1"
+              type="range" id="upper-slider">
+            <output id="upper-balloon">3</output>
+          </div>
+        </div>
 
-      <input class="transparent" value="3" min="0" max="8" step="1"
-        type="range" id="upper-slider">
-      <output id="upper-balloon">3</output>
+        <div class="slider-row">
+          <div class="slider-label">
+            Birth value
+          </div>
+          <div class="slider">
+            <input value="3" min="0" max="8" step="1" type="range"
+              id="birth-slider">
+            <output id="birth-balloon">3</output>
+          </div>
+        </div>
+      </div>
+
+      <form id="size-form">
+        Size: <input id="size" type="number" min=2 max=500 step=1 value=30>
+      </form>
+      <form id="settings-form">
+        Delay: <input id="delay" type="number" min=1 step=1 value=100><br>
+        Seed density: <input id="density" type="number" min=0.01 max=1
+          step=0.01 value=0.08>
+      </form>
     </div>
-    <div class="slider">
-      <input value="3" min="0" max="8" step="1" type="range"
-        id="birth-slider">
-      <output id="birth-balloon">3</output>
-    </div>
-    <form id="size-form">
-      Size: <input id="size" type="number" min=2 max=500 step=1 value=30>
-    </form>
-    <form id="settings-form">
-      Delay: <input id="delay" type="number" min=1 step=1 value=100><br>
-      Seed density: <input id="density" type="number" min=0.01 max=1
-        step=0.01 value=0.08>
-    </form>
-
-    <p>Generation: <span id="generation">0</span></p>
-    <p>Live cells: <span id="live-cells">0</span></p>
   </body>
   <script src="conway.js"></script>
 </html>
