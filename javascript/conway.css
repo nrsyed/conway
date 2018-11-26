@@ -30,7 +30,9 @@ p {
 
 .slider-container {
   background-color: orange;
-  border: 2px solid black;
+  border: 1px solid black;
+  border-radius: 5px;
+  box-shadow: 2px 2px gray;;
   margin: 2px auto;
   padding: 5px auto;
   width: 400px;
@@ -145,15 +147,18 @@ output {
 #lower-balloon {
   background-color: rgba(0, 255, 0, 0.2);
   left: calc((2 / 8) * var(--slider-range) + var(--left-offset));
+  /*left: calc((2 / 8) * var(--slider-range) + 2 * var(--left-offset));*/
 }
 
 #upper-balloon {
   background-color: rgba(255, 0, 0, 0.2);
   left: calc((3 / 8) * var(--slider-range) + var(--left-offset));
+  /*left: calc((3 / 8) * var(--slider-range) + 3 * var(--left-offset));*/
 }
 
 #birth-balloon {
   background-color: #fff;
+  /*left: calc((3 / 8) * var(--slider-range) + 3 * var(--left-offset));*/
   left: calc((3 / 8) * var(--slider-range) + var(--left-offset));
 }
 

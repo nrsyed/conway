@@ -35,7 +35,7 @@ function GameCanvas(canvas, cellCounter=null, generationCounter=null,
   this.context = canvas.getContext("2d");
 
   /** @member {array} fillStyles - Live cell and dead cell colors. */
-  this.fillStyles = ["rgb(240, 240, 240)", "rgb(10, 10, 10)"];
+  this.fillStyles = ["rgb(20,20,20)", "rgb(220,220,220)"];
 
   /** @member {bool} running - true if the Game is active, false if paused. */
   this.running = true;
@@ -265,11 +265,32 @@ function click(e) {
   gc.toggleCell(cellY, cellX);
 }
 
-function sliderInput(e) {
-  let slider = e.target;
-  let sliderId = slider.id.split("-")[0];
-  let sliderVal = slider.value;
+/** @function toCamelCase - Convert "kebab-case" to "camelCase". */
+function toCamelCase(s) {
+  const pattern = /(\-[a-z])/g;
+  return s.replace(pattern, (match) => match[1].toUpperCase());
+}
 
+function sliderMove(e) {
+  let slider = e.target;
+  let sliderVal = slider.value;
+  updateSliderBubble(slider);
+
+  // GameOfLife object has members survivalMin, survivalMax, and birthVal
+  // that define its rules. Each slider has an id of the same name but in
+  // kebab case ("survival-max", "survival-min", "birth-val"). Convert to
+  // camel case to update appropriate rule value.
+  gc.game[toCamelCase(slider.id)] = sliderVal;
+}
+
+/**
+ * @function updateSliderBubble
+ * Set the position and text of the value bubble floating above a
+ * slider thumb based on the position of the slider thumb.
+ */
+function updateSliderBubble(slider) {
+  let sliderId = slider.id;
+  let sliderVal = slider.value;
   let sliderMin = slider.min;
   let sliderRange = slider.max - sliderMin;
   let sliderWidth = slider.offsetWidth;
@@ -279,21 +300,17 @@ function sliderInput(e) {
     window.getComputedStyle(slider).getPropertyValue("--thumb-width"));
   let effectiveWidth = sliderWidth - thumbWidth;
 
-  let output = document.getElementById(sliderId + "-balloon");
-  let balloonWidth = parseInt(window.getComputedStyle(output).getPropertyValue(
+  // The bubble corresponding to each slider is an <output> element whose id
+  // is the same as its corresponding slider with the word "bubble" appended,
+  // e.g., <output id="survival-min-bubble" ...> is the counterpart of
+  // <input id="survival-min" ...>.
+  let bubble = document.getElementById(sliderId + "-bubble");
+  let bubbleWidth = parseInt(window.getComputedStyle(bubble).getPropertyValue(
     "width"));
-  let leftOffset = (-(balloonWidth - thumbWidth) / 2) + (position * effectiveWidth);
-  output.setAttribute("style", "left: " + leftOffset + "px");
+  let leftOffset = (-(bubbleWidth - thumbWidth) / 2) + (position * effectiveWidth);
 
-  if (sliderId == "lower") {
-    gc.game.survivalMin = sliderVal;
-  } else if (sliderId == "upper") {
-    gc.game.survivalMax = sliderVal;
-  } else {
-    gc.game.birthVal = sliderVal;
-  }
-
-  output.innerHTML = sliderVal;
+  bubble.setAttribute("style", "left: " + leftOffset + "px");
+  bubble.innerHTML = sliderVal;
 }
 
 function sizeSubmit(e) {
@@ -359,7 +376,8 @@ function settingsSubmit(e) {
 function init() {
   let sliders = document.querySelectorAll(".slider input");
   for (slider of sliders) {
-    slider.addEventListener("input", sliderInput);
+    slider.addEventListener("input", sliderMove);
+    updateSliderBubble(slider);
   }
 
   window.addEventListener("keydown", keyDown);
