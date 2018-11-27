@@ -1,9 +1,9 @@
 body {
-  background-color: black;
+  background-color: rgb(220, 220, 220);
 }
 
 .game-of-life {
-  background-color: rgb(200, 200, 200);
+  /*background-color: rgb(220, 220, 220);*/
   margin: 0 auto;
   padding: 10px 20px;
   text-align: center;
@@ -34,7 +34,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-  margin: 0 auto;
+  margin: 4px auto;
   max-width: 500px;
   position: relative;
   top: -2px;
