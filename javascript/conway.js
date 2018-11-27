@@ -288,11 +288,6 @@ function updateSliderBubble(slider) {
   bubble.innerHTML = sliderVal;
 }
 
-function sizeSubmit(e) {
-  e.preventDefault();
-  setSize();
-}
-
 function setDelay() {
   if (validateDelay()) {
     gc.delay = Number(document.getElementById("delay").value);
@@ -341,10 +336,20 @@ function validateSize() {
   return size != "" && Number.isInteger(sizeVal) && sizeVal >= 2 && sizeVal <= 500;
 }
 
-function settingsSubmit(e) {
-  if (e.keyCode == 13) {
-    setDelay();
-    setDensity();
+function formSubmit(e) {
+  e.preventDefault();
+
+  validateDelay();
+  validateDensity();
+  validateSize();
+
+  setDelay();
+  setDensity();
+
+  // Resizing grid automatically randomizes the grid, so only call setSize()
+  // if the new size is different from the current size.
+  if (document.getElementById("size").value != gc.grid.numRows) {
+    setSize();
   }
 }
 
@@ -379,11 +384,15 @@ function init() {
   let canvas = document.getElementById("canvas");
   canvas.addEventListener("click", clickCanvas);
 
+  /*
   let sizeForm = document.getElementById("size-form");
   sizeForm.addEventListener("submit", sizeSubmit);
 
   let settings = document.getElementById("settings-form");
   settings.addEventListener("keydown", settingsSubmit);
+  */
+  let settingsForm = document.getElementById("settings-form");
+  settingsForm.addEventListener("submit", formSubmit);
 
   let cellCounter = document.getElementById("live-cells");
   let generationCounter = document.getElementById("generation");
