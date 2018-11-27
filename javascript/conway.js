@@ -120,7 +120,6 @@ GameCanvas.prototype = {
   }
 }
 
-
 /**
  * @class GameOfLife
  * Class to implement Conway's Game of Life.
@@ -234,35 +233,11 @@ GameOfLife.prototype = {
   }
 }
 
-function keyDown(e) {
-  switch (e.keyCode) {
-    case 32:
-      // Spacebar: pause/unpause Game execution.
-      if (gc.running) {
-        gc.running = false;
-      } else {
-        gc.running = true;
-        gc.run();
-      }
-      break;
-    case 82:
-      // r: randomize grid.
-      gc.randomizeGrid();
-      gc.drawGrid();
-      break;
-    case 16:
-      // Shift: clear grid.
-      gc.clearGrid();
-      break;
-    default:
-      //console.log(e.keyCode);
-  }
-}
-
-function click(e) {
+function clickCanvas(e) {
   let cellX = Math.floor(e.layerX / gc.cellWidth);
   let cellY = Math.floor(e.layerY / gc.cellHeight);
   gc.toggleCell(cellY, cellX);
+  gc.updateCounters();
 }
 
 /** @function toCamelCase - Convert "kebab-case" to "camelCase". */
@@ -380,10 +355,29 @@ function init() {
     updateSliderBubble(slider);
   }
 
-  window.addEventListener("keydown", keyDown);
+  let pauseButton = document.getElementById("pause");
+  pauseButton.addEventListener("click", function(e) {
+    if (gc.running) {
+      gc.running = false;
+      this.innerHTML = "Run";
+    } else {
+      gc.running = true;
+      gc.run();
+      this.innerHTML = "Pause";
+    }
+  });
+
+  let randomizeButton = document.getElementById("randomize");
+  randomizeButton.addEventListener("click", function(e) {
+    gc.randomizeGrid();
+    gc.drawGrid();
+  });
+
+  let clearButton = document.getElementById("clear");
+  clearButton.addEventListener("click", function(e) { gc.clearGrid() });
 
   let canvas = document.getElementById("canvas");
-  canvas.addEventListener("click", click);
+  canvas.addEventListener("click", clickCanvas);
 
   let sizeForm = document.getElementById("size-form");
   sizeForm.addEventListener("submit", sizeSubmit);
