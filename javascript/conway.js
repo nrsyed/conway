@@ -348,7 +348,7 @@ function formSubmit(e) {
 
   // Resizing grid automatically randomizes the grid, so only call setSize()
   // if the new size is different from the current size.
-  if (document.getElementById("size").value != gc.grid.numRows) {
+  if (document.getElementById("size").value != gc.game.numRows) {
     setSize();
   }
 }
