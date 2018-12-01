@@ -1,5 +1,6 @@
 body {
-  background-color: rgb(220, 220, 220);
+  /*background: url("grid_bg.png");*/
+  background-color: #fff;
 }
 
 .game-of-life {
@@ -127,7 +128,7 @@ body {
 
 .slider input::-webkit-slider-runnable-track {
   position: relative;
-  background-color: #e2e2e2;
+  background-color: #fff;
   border: 1px solid #b2b2b2;
   border-radius: 5px;
   height: 12px;

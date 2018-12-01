@@ -35,7 +35,7 @@ function GameCanvas(canvas, cellCounter=null, generationCounter=null,
   this.context = canvas.getContext("2d");
 
   /** @member {array} fillStyles - Live cell and dead cell colors. */
-  this.fillStyles = ["rgb(240,240,240)", "rgb(20,20,20)"];
+  this.fillStyles = ["rgb(254,254,254)", "rgb(20,20,20)"];
 
   /** @member {bool} running - true if the Game is active, false if paused. */
   this.running = true;
