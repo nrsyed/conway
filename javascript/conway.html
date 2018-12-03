@@ -6,63 +6,58 @@
   </head>
   <body>
     <div class="game-of-life">
-      <canvas id="canvas" height=500 width=500></canvas>
-
-      <div class="controls">
-        <span id="pause" class="button">Pause</span>
-        <span id="randomize" class="button">Randomize</span>
-        <span id="clear" class="button">Clear</span>
-      </div>
-
-      <div class="container counter-row">
-        <div class="counter">Generation: <span id="generation">0</span></div>
-        <div class="counter">Live cells: <span id="live-cells">0</span></div>
+      <div id="canvas-container">
+        <canvas id="canvas" height=500 width=500></canvas>
+        <div class="counter-row">
+          <div class="counter">Generation: <span id="generation">0</span></div>
+          <div class="counter">Live cells: <span id="live-cells">0</span></div>
+        </div>
+        <div class="controls">
+          <span id="pause" class="button">Pause</span>
+          <span id="randomize" class="button">Randomize</span>
+          <span id="clear" class="button">Clear</span>
+        </div>
       </div>
 
       <div class="settings">
-        <div class="container slider-container">
-          <div class="slider-row">
-            <div class="slider-label">
-              Survival range
-            </div>
-            <div class="slider">
-              <input value="2" min="0" max="8" step="1" type="range"
-                id="survival-min">
-              <output id="survival-min-bubble">2</output>
-              <input class="transparent" value="3" min="0" max="8" step="1"
-                type="range" id="survival-max">
-              <output id="survival-max-bubble">3</output>
-            </div>
+        <div class="slider-row">
+          <div class="slider-label">
+            Survival range
           </div>
-
-          <div class="slider-row">
-            <div class="slider-label">
-              Birth value
-            </div>
-            <div class="slider">
-              <input value="3" min="0" max="8" step="1" type="range"
-                id="birth-val">
-              <output id="birth-val-bubble">3</output>
-            </div>
+          <div class="slider">
+            <input value="2" min="0" max="8" step="1" type="range"
+              id="survival-min">
+            <output id="survival-min-bubble">2</output>
+            <input class="transparent" value="3" min="0" max="8" step="1"
+              type="range" id="survival-max">
+            <output id="survival-max-bubble">3</output>
           </div>
         </div>
 
-        <div class="container form-container">
-          <form id="settings-form">
-            Size:
-            <input id="size" type="number" min=2 max=500 step=1 value=30>
-            <br>
-            Delay:
-            <input id="delay" type="number" min=1 max=5000 step=1 value=100>
-            <br>
-            Seed density:
-            <input id="density" type="number" min=0.01 max=1 step=0.01 value=0.08>
-            <br>
-            <input id="set" type="submit" value="Set">
-          </form>
+        <div class="slider-row">
+          <div class="slider-label">
+            Birth value
+          </div>
+          <div class="slider">
+            <input value="3" min="0" max="8" step="1" type="range"
+              id="birth-val">
+            <output id="birth-val-bubble">3</output>
+          </div>
         </div>
+
+        <form id="settings-form">
+          Size:
+          <input id="size" type="number" min=2 max=500 step=1 value=30>
+          <br>
+          Delay:
+          <input id="delay" type="number" min=1 max=5000 step=1 value=100>
+          <br>
+          Seed density:
+          <input id="density" type="number" min=0.01 max=1 step=0.01 value=0.08>
+          <br>
+          <input id="set" type="submit" value="Set">
+        </form>
       </div>
-
     </div>
   </body>
   <script src="conway.js"></script>
