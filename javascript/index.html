@@ -27,10 +27,10 @@
           <div class="slider">
             <input value="2" min="0" max="8" step="1" type="range"
               id="survival-min">
-            <output id="survival-min-bubble">2</output>
+            <output id="survival-min-bubble" class="survival-min-color">2</output>
             <input class="transparent" value="3" min="0" max="8" step="1"
               type="range" id="survival-max">
-            <output id="survival-max-bubble">3</output>
+            <output id="survival-max-bubble" class="survival-max-color">3</output>
           </div>
         </div>
 
@@ -45,7 +45,7 @@
           </div>
         </div>
 
-        <form id="settings-form">
+        <form>
           Grid size (NxN):
           <input id="size" type="number" min=2 max=500 step=1 value=30>
           <br>
@@ -57,6 +57,39 @@
           <br>
           <input id="set" type="submit" value="Set">
         </form>
+
+        <div id="instructions">
+          <p class="bold">
+            Click anywhere in the grid to toggle cells on/off.
+          </p>
+          <p>
+            <span class="italic">Survival range</span>:
+            Living cells with at least the
+            <span class="survival-min-text">minimum</span>
+            and at most the <span class="survival-max-text">maximum</span>
+            number of neighbors survive to the next generation.
+          </p>
+          <p>
+            <span class="italic">Birth value</span>: Dead cells with the selected
+            number of neighbors become live cells.
+          </p>
+          <p>
+            <span class="italic">Grid size</span>: Number of rows/columns.
+          </p>
+          <p>
+            <span class="italic">Delay</span>: Milliseconds between generations.
+          </p>
+          <p>
+            <span class="italic">Random density</span>: Probability (between
+            0.01 and 1.0) of each cell in the grid being alive when Randomize
+            is clicked.
+          </p>
+          <p>
+            Survival range and birth value can be adjusted in real time.
+            Changes to grid size, delay, and random density take effect after
+            clicking "Set". Changing grid size randomizes the grid.
+          </p>
+        </div>
       </div>
     </div>
   </body>

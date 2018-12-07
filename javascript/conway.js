@@ -384,14 +384,7 @@ function init() {
   let canvas = document.getElementById("canvas");
   canvas.addEventListener("click", clickCanvas);
 
-  /*
-  let sizeForm = document.getElementById("size-form");
-  sizeForm.addEventListener("submit", sizeSubmit);
-
-  let settings = document.getElementById("settings-form");
-  settings.addEventListener("keydown", settingsSubmit);
-  */
-  let settingsForm = document.getElementById("settings-form");
+  let settingsForm = document.querySelector("form");
   settingsForm.addEventListener("submit", formSubmit);
 
   let cellCounter = document.getElementById("live-cells");
