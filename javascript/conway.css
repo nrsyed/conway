@@ -1,18 +1,21 @@
 :root {
   --survival-min-color: rgba(120, 210, 140, 0.9);
   --survival-max-color: rgba(200, 120, 120, 0.9);
+
+  font-family: Verdana, sans-serif;
+  font-size: 16px;
 }
 
 body {
   background-image: url("bg_grid.jpg");
   background-repeat: repeat;
   background-color: #fff;
-  font-size: 18px;
+  font-size: 1rem;
   font-weight: bold;
 }
 
 canvas {
-  border-radius: 5px;
+  border-radius: 1px;
 }
 
 form {
@@ -23,17 +26,18 @@ form input {
   margin: 3px auto;
 }
 
+form #set {
+  font-size: 1rem;
+}
+
+form #delay, #density {
+  width: 48px;
+}
+
 form #size {
   width: 42px;
 }
 
-form #delay {
-  width: 48px;
-}
-
-form #density {
-  width: 48px;
-}
 
 html {
   color: #ddd;
@@ -44,7 +48,7 @@ output {
   border-radius: 3px;
   color: #333;
   display: block;
-  font-size: 18px;
+  font-size: 1rem;
   font-weight: bold;
   height: 24px;
   line-height: 24px;
@@ -56,7 +60,7 @@ output {
 }
 
 p {
-  font-size: 16px;
+  font-size: 0.89rem;
   font-weight: normal;
   margin: 6px 0;
 }
@@ -78,7 +82,7 @@ p {
   border: 1px solid #222222;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 1.1rem;
   font-weight: bold;
   min-width: 50px;
   padding: 0.2em;
@@ -108,14 +112,13 @@ p {
 .counter-row {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-around;
   margin: 0 auto;
-  width: 400px;
 }
 
 .counter {
   text-align: left;
-  width: 40%;
+  width: 45%;
 }
 
 .settings {
@@ -131,6 +134,12 @@ p {
   margin: 5px 0;
 }
 
+.slider-label {
+  font-size: 1rem;
+  text-align: left;
+  width: 5rem;
+}
+
 .slider {
   --balloon-width: 20px;
   --thumb-width: 20px;
@@ -143,12 +152,6 @@ p {
   width: var(--slider-width);
   margin: 12px 2px;
   text-align: left;
-}
-
-.slider-label {
-  font-size: 18px;
-  text-align: left;
-  width: 70px;
 }
 
 .slider input {
