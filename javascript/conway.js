@@ -327,7 +327,7 @@ function validateDelay() {
 function validateDensity() {
   let density = document.getElementById("density").value;
   let densityVal = Number(density);
-  return density != "" && density > 0 && density <= 1;
+  return density != "" && densityVal > 0 && densityVal <= 1;
 }
 
 function validateSize() {
