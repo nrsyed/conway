@@ -5,8 +5,16 @@ body {
 }
 
 canvas {
-  /*border: 1px solid black;*/
   border-radius: 5px;
+}
+
+form {
+  font-size: 18px;
+  margin: 20px 0;
+}
+
+html {
+  color: #ddd;
 }
 
 .game-of-life {
@@ -22,16 +30,17 @@ canvas {
 }
 
 .button {
+  background-color: #a2a2a2;
   border: 1px solid black;
   border-radius: 4px;
   cursor: pointer;
-  /*font-size: 18px;*/
+  font-size: 18px;
   padding: 0.2em;
-  min-width: 40px;
+  min-width: 46px;
 }
 
 .button:hover {
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(200, 200, 200, 0.5);
 
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -92,8 +101,9 @@ canvas {
 }
 
 .slider-label {
+  font-size: 18px;
   text-align: left;
-  width: 100px;
+  width: 70px;
 }
 
 .slider input {
@@ -158,9 +168,10 @@ canvas {
 output {
   border: 1px solid #e2e2e2;
   border-radius: 3px;
-  color: #777;
+  color: #333;
   display: block;
-  font-size: 14px;
+  font-size: 18px;
+  font-weight: bold;
   height: 24px;
   line-height: 24px;
   margin: 0;
@@ -171,11 +182,11 @@ output {
 }
 
 #survival-min-bubble {
-  background-color: rgba(0, 255, 0, 0.2);
+  background-color: rgba(120, 210, 140, 0.9);
 }
 
 #survival-max-bubble {
-  background-color: rgba(255, 0, 0, 0.2);
+  background-color: rgba(200, 120, 120, 0.9);
 }
 
 #birth-val-bubble {
