@@ -1,3 +1,8 @@
+:root {
+  --survival-min-color: rgba(120, 210, 140, 0.9);
+  --survival-max-color: rgba(200, 120, 120, 0.9);
+}
+
 body {
   background-image: url("bg_grid.jpg");
   background-repeat: repeat;
@@ -14,8 +19,46 @@ form {
   margin: 20px 0;
 }
 
+form input {
+  margin: 3px auto;
+}
+
+form #size {
+  width: 42px;
+}
+
+form #delay {
+  width: 48px;
+}
+
+form #density {
+  width: 48px;
+}
+
 html {
   color: #ddd;
+}
+
+output {
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  color: #333;
+  display: block;
+  font-size: 18px;
+  font-weight: bold;
+  height: 24px;
+  line-height: 24px;
+  margin: 0;
+  position: absolute;
+  text-align: center;
+  top: -14px;
+  width: var(--balloon-width);
+}
+
+p {
+  font-size: 16px;
+  font-weight: normal;
+  margin: 6px 0;
 }
 
 .game-of-life {
@@ -167,46 +210,33 @@ html {
   background-color: transparent;
 }
 
-output {
-  border: 1px solid #e2e2e2;
-  border-radius: 3px;
-  color: #333;
-  display: block;
-  font-size: 18px;
-  font-weight: bold;
-  height: 24px;
-  line-height: 24px;
-  margin: 0;
-  position: absolute;
-  text-align: center;
-  top: -14px;
-  width: var(--balloon-width);
-}
-
-#survival-min-bubble {
-  background-color: rgba(120, 210, 140, 0.9);
-}
-
-#survival-max-bubble {
-  background-color: rgba(200, 120, 120, 0.9);
-}
 
 #birth-val-bubble {
   background-color: #fff;
 }
 
-form input {
-  margin: 3px auto;
+#survival-max-bubble {
+  background-color: var(--survival-max-color);
 }
 
-form #size {
-  width: 42px;
+#survival-min-bubble {
+  background-color: var(--survival-min-color);
 }
 
-form #delay {
-  width: 48px;
+.survival-max-text {
+  color: var(--survival-max-color);
+  font-weight: bold;
 }
 
-form #density {
-  width: 48px;
+.survival-min-text {
+  color: var(--survival-min-color);
+  font-weight: bold;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.italic {
+  font-style: italic
 }
