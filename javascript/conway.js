@@ -234,8 +234,8 @@ GameOfLife.prototype = {
 }
 
 function clickCanvas(e) {
-  let cellX = Math.floor(e.layerX / gc.cellWidth);
-  let cellY = Math.floor(e.layerY / gc.cellHeight);
+  let cellX = Math.floor((e.pageX - e.target.offsetLeft) / gc.cellWidth);
+  let cellY = Math.floor((e.pageY - e.target.offsetTop) / gc.cellWidth);
   gc.toggleCell(cellY, cellX);
   gc.updateCounters();
 }
