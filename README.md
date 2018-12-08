@@ -18,16 +18,16 @@ The birth value is a single value rather than a range.
 As an example, the birth value and survival range in the screenshot below would
 be expressed in the usual Game of Life notation as B1/S456.
 
-![B1S456](images/B1S456.jpg)
+![B1S456](img/B1S456.jpg)
 
 This implementation (which is essentially a simplified, dynamic version of the
 [Larger than Life](http://www.conwaylife.com/wiki/Larger_than_Life) ruleset) 
 can make for some interesting patterns and behavior.
 
-<img src="images/B1S67.gif">&nbsp;&nbsp;&nbsp;&nbsp; 
-<img src="images/random.gif"><br><br>
-<img src="images/B3S14.gif">&nbsp;&nbsp;&nbsp;&nbsp; 
-<img src="images/B0S58.gif">
+<img src="img/B1S67.gif">&nbsp;&nbsp;&nbsp;&nbsp; 
+<img src="img/random.gif"><br><br>
+<img src="img/B3S14.gif">&nbsp;&nbsp;&nbsp;&nbsp; 
+<img src="img/B0S58.gif">
 
 The grid is fixed to be square, but its size (number of rows/columns) can be
 adjusted. The grid can be randomized, and the random seed density (probability
