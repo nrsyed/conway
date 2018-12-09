@@ -5,13 +5,13 @@ dynamic version of Conway's Game of Life—dynamic because the rules can be chan
 on the fly, and interactive because the user can change them. The user
 can also interact directly with the Game by clicking cells in the grid to
 toggle them on and off. If you're not familiar with Conway's Game of Life,
-read the [Background](#background) section below or check out the
+read the [Background](#background) section below or check out its 
 [Wikipedia entry](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 
 In this implementation, the survival values (the number(s) of neighbors
 necessary for a cell to survive to the next generation) take on a range rather
 than discrete values. In other words, there's an *S<sub>min</sub>* and an
-*S<sub>max</sub>*, and if a cell has *N* neighbors, then any given cell will
+*S<sub>max</sub>*, and if a cell has *N* neighbors, then it will
 survive to the next generation if *S<sub>min</sub>* ≤ *N* ≤ *S<sub>max</sub>*.
 The birth value is a single value rather than a range.
 
