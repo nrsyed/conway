@@ -22,10 +22,11 @@ be expressed in the usual Game of Life notation as B1/S456.
 
 This implementation (which is essentially a simplified, dynamic version of the
 [Larger than Life](http://www.conwaylife.com/wiki/Larger_than_Life) ruleset) 
-can make for some interesting patterns and behavior.
+can make for some interesting behavior.
 
+<img src="img/random_whole.gif"><br>
 <img src="img/B1S67.gif">&nbsp;&nbsp;&nbsp;&nbsp; 
-<img src="img/random.gif"><br><br>
+<img src="img/random.gif"><br>
 <img src="img/B3S14.gif">&nbsp;&nbsp;&nbsp;&nbsp; 
 <img src="img/B0S58.gif">
 
