@@ -1,11 +1,12 @@
 # Dynamic variations on Conway's Game of Life
 
 This repo contains my own JavaScript implementation of an interactive and
-dynamic version of Conway's Game of Life—dynamic because the rules can be changed
-on the fly, and interactive because the user can change them. The user
-can also interact directly with the Game by clicking cells in the grid to
-toggle them on and off. If you're not familiar with Conway's Game of Life,
-read the [Background](#background) section below or check out its 
+dynamic version of Conway's Game of Life—dynamic because the rules can be
+changed on the fly (and the results visualized in real time), and interactive
+because the user can change them. The user can also interact directly with the
+Game by clicking cells in the grid to toggle them on and off. If you're not
+familiar with Conway's Game of Life, read the [Background](#background) section
+below or check out its 
 [Wikipedia entry](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 
 In this implementation, the survival values (the number(s) of neighbors
@@ -20,9 +21,10 @@ be expressed in the usual Game of Life notation as B1/S456.
 
 ![B1S456](img/B1S456.jpg)
 
-This implementation (which is essentially a simplified, dynamic version of the
-[Larger than Life](http://www.conwaylife.com/wiki/Larger_than_Life) ruleset) 
-can make for some interesting behavior.
+This implementation, which is essentially a simplified, dynamic version of the
+[Larger than Life](http://www.conwaylife.com/wiki/Larger_than_Life) ruleset 
+that allows the rules to be changed in real time in the midst of a Game, can make
+for some interesting behavior.
 
 <img src="img/random_whole.gif"><br>
 <img src="img/B1S67.gif">&nbsp;&nbsp;&nbsp;&nbsp; 
