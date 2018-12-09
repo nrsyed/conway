@@ -1,8 +1,8 @@
 # Dynamic variations on Conway's Game of Life
 
-This repo consists of my own JavaScript implementation of an interactive and
+This repo contains my own JavaScript implementation of an interactive and
 dynamic version of Conway's Game of Life—dynamic because the rules can be changed
-on the fly, and interactive because the user (you!) can change them. The user
+on the fly, and interactive because the user can change them. The user
 can also interact directly with the Game by clicking cells in the grid to
 toggle them on and off. If you're not familiar with Conway's Game of Life,
 read the [Background](#background) section below or check out the
@@ -32,7 +32,7 @@ can make for some interesting behavior.
 
 The grid is fixed to be square, but its size (number of rows/columns) can be
 adjusted. The grid can be randomized, and the random seed density (probability
-that a given cell will be alive) can be adjusted.
+that a given cell will be alive) can also be adjusted.
 
 ## Background
 
@@ -52,5 +52,5 @@ generation, i.e., it is "born."
 
 This is notated B3/S23, where the **B** indicates the number(s) of neighboring
 cells necessary for a new cell to be **b**orn from a dead cell and **S** denotes 
-the number(s) of neighboring cells for a living cell to **s**urvive to the
-next generation.
+the number(s) of neighboring cells necessary for a living cell to **s**urvive
+to the next generation.
